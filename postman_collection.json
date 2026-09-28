@@ -1,0 +1,240 @@
+{
+  "info": {
+    "_postman_id": "b8a92f44-1234-4567-89ab-multidocworkbench",
+    "name": "Multi-Document Intelligence Workbench API",
+    "description": "Postman Collection for testing all endpoints of the Multi-Document Intelligence Workbench backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000/api",
+      "type": "string"
+    },
+    {
+      "key": "sessionId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01. System Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        },
+        "description": "Checks server status and uptime"
+      }
+    },
+    {
+      "name": "02. Create Analysis Session",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"Identify inconsistencies and discrepancies between the application form and supporting financial documents.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/sessions",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions"]
+        },
+        "description": "Creates a new analysis session with an analysis instruction prompt."
+      }
+    },
+    {
+      "name": "03. Get All Sessions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sessions",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions"]
+        },
+        "description": "Lists all analysis sessions with their documents and statuses."
+      }
+    },
+    {
+      "name": "04. Get Session By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}"]
+        },
+        "description": "Retrieves session details, documents, and historical findings."
+      }
+    },
+    {
+      "name": "05. Update Session Prompt",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"Compare the financial position and revenue figures of the companies represented in the documents.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}/prompt",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}", "prompt"]
+        },
+        "description": "Updates the analysis prompt for an existing session."
+      }
+    },
+    {
+      "name": "06. Upload Documents to Session (Multipart)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "files",
+              "type": "file",
+              "src": "",
+              "description": "Select sample-documents/company_alpha_report.txt, sample-documents/alpha_credit_application.txt, or sample-documents/company_beta_financials.csv"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}/documents",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}", "documents"]
+        },
+        "description": "Upload multiple files (PDF, CSV, TXT) via multipart form-data. Key must be 'files'."
+      }
+    },
+    {
+      "name": "07. Get Documents in Session",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}/documents",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}", "documents"]
+        },
+        "description": "Lists all documents uploaded for the session with extraction status, SHA-256 hash, and size."
+      }
+    },
+    {
+      "name": "08. Get Document Chunks & Provenance",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents/{{documentId}}/chunks",
+          "host": ["{{baseUrl}}"],
+          "path": ["documents", "{{documentId}}", "chunks"]
+        },
+        "description": "Retrieves the chunked text and character offsets for a document."
+      }
+    },
+    {
+      "name": "09. Run Multi-Document Analysis",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"Identify inconsistencies and discrepancies between the application form and supporting documents.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}/analyze",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}", "analyze"]
+        },
+        "description": "Triggers the AI multi-document analysis engine. Persists findings, comparison matrix, and citation provenance."
+      }
+    },
+    {
+      "name": "10. Get Analysis Results & Provenance",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}/result",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}", "result"]
+        },
+        "description": "Returns full analysis results, comparison table, discrepancies, key-values, missing info, and citation evidence."
+      }
+    },
+    {
+      "name": "11. Export Report as Markdown",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}/export?format=markdown",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}", "export"],
+          "query": [
+            {
+              "key": "format",
+              "value": "markdown"
+            }
+          ]
+        },
+        "description": "Downloads the generated report formatted in Markdown."
+      }
+    },
+    {
+      "name": "12. Delete Document",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents/{{documentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["documents", "{{documentId}}"]
+        },
+        "description": "Deletes a document, its chunks, and the file from disk."
+      }
+    },
+    {
+      "name": "13. Delete Session",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sessions/{{sessionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["sessions", "{{sessionId}}"]
+        },
+        "description": "Deletes a session and cascades deletes across documents, chunks, results, and findings."
+      }
+    }
+  ]
+}
