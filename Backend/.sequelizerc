@@ -1,0 +1,16 @@
+const path = require("path");
+
+const env = process.env.NODE_ENV || "development";
+const basePath = "./src/database";
+
+const seedersPath =
+  env === "development"
+    ? path.resolve(basePath, "seeders/devSeeders")
+    : path.resolve(basePath, "seeders");
+
+module.exports = {
+  config: path.resolve("./src/database", "config/config.js"),
+  "models-path": path.resolve("./src/database/models"),
+  "seeders-path": seedersPath,
+  "migrations-path": path.resolve("./src/database/migrations"),
+};
