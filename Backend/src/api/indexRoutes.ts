@@ -1,22 +1,22 @@
 import { Router } from 'express';
-import sessionRoutes from './session/session.routes';
-import documentRoutes from './document/document.routes';
-import analysisRoutes from './analysis/analysis.routes';
+import workbenchRoutes from './workbench.routes';
 
 const router = Router();
 
-// Health check route
+
 router.get('/health', (_req, res) => {
   res.status(200).json({
     status: 'ok',
     service: 'Multi-Document Intelligence Workbench API',
+    endpoints: [
+      'POST /api/upload (Upload documents + prompt)',
+      'POST /api/evaluate/:sessionId (Evaluate documents and generate insights)',
+    ],
     timestamp: new Date().toISOString(),
   });
 });
 
-// Mount modular sub-routes
-router.use('/sessions', sessionRoutes);
-router.use('/', documentRoutes);
-router.use('/', analysisRoutes);
+
+router.use('/', workbenchRoutes);
 
 export default router;

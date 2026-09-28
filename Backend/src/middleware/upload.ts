@@ -6,7 +6,7 @@ import { SUPPORTED_MIME_TYPES, MAX_FILE_SIZE_BYTES } from '../utils/contant';
 
 const UPLOAD_DIR = path.join(__dirname, '../../uploads');
 
-// Ensure upload directory exists
+
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }

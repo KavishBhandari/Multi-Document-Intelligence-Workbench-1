@@ -9,12 +9,11 @@ const { express, app, dotenv } = library;
 
 dotenv.config();
 
-// Security and middleware
 app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 app.use(cors({
-  origin: '*', // Allow all origins for dev / screening testing
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -24,11 +23,11 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/public', express.static(library.path.join(__dirname, '../public')));
 app.use('/uploads', express.static(library.path.join(__dirname, '../uploads')));
 
-// Mount API routes
+
 app.use('/api', indexRoutes);
 app.use('/', indexRoutes);
 
-// 404 handler
+
 app.use((req, res, _next) => {
   return ResponseHelper.sendErrorRes(res, `Route ${req.method} ${req.originalUrl} Not Found`, 404);
 });

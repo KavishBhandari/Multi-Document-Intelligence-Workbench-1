@@ -1,21 +1,4 @@
-/**
- * Mock AI Analysis Service
- * 
- * This is a structured, deterministic AI mock that performs real text analysis
- * without requiring an external LLM API. It demonstrates the architecture of
- * how a real LLM integration would work while producing meaningful results.
- * 
- * The mock performs:
- * - Key-value extraction (dates, amounts, names, emails)
- * - Cross-document comparison
- * - Discrepancy detection
- * - Missing information identification
- * - Consolidated summary generation
- * 
- * Each finding is classified as either 'extracted_fact' or 'ai_interpretation'
- * to clearly distinguish between data pulled directly from documents and
- * AI-generated insights.
- */
+
 
 import { FINDING_TYPES, FINDING_CLASSIFICATIONS, FINDING_SEVERITIES } from '../utils/contant';
 
@@ -61,7 +44,7 @@ export interface ComparisonRow {
   status: 'consistent' | 'discrepant' | 'partial';
 }
 
-// Regex patterns for extracting structured data from text
+
 const PATTERNS = {
   date: /\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\w+ \d{1,2},?\s*\d{4}|\d{4}-\d{2}-\d{2})\b/gi,
   money: /[\$£€₹][\s]?[\d,]+\.?\d*|\b\d[\d,]*\.?\d*\s*(?:USD|EUR|GBP|INR|dollars?|pounds?)\b/gi,
@@ -76,9 +59,7 @@ const PATTERNS = {
 };
 
 export class MockAIService {
-  /**
-   * Main analysis entry point - orchestrates all analysis steps
-   */
+
   static async analyzeDocuments(
     documents: DocumentInput[],
     prompt: string
@@ -126,9 +107,7 @@ export class MockAIService {
     };
   }
 
-  /**
-   * Extract structured key-value pairs from a document's text
-   */
+
   private static extractKeyValues(
     doc: DocumentInput
   ): Map<string, { value: string; quote: string; chunkId: number | null }[]> {
@@ -170,9 +149,7 @@ export class MockAIService {
     return extractions;
   }
 
-  /**
-   * Build key-value extraction findings
-   */
+
   private static buildKeyValueFindings(
     documentExtractions: Array<{
       document: DocumentInput;
@@ -205,9 +182,7 @@ export class MockAIService {
     return findings;
   }
 
-  /**
-   * Compare extracted values across documents
-   */
+
   private static buildComparisonFindings(
     documentExtractions: Array<{
       document: DocumentInput;
@@ -242,8 +217,8 @@ export class MockAIService {
           description: allSame
             ? `${this.formatFieldName(field)} are consistent across all documents: ${allValues[0].values.join(', ')}`
             : `${this.formatFieldName(field)} differ across documents. ${allValues
-                .map((v) => `${v.docName}: ${v.values.join(', ')}`)
-                .join(' | ')}`,
+              .map((v) => `${v.docName}: ${v.values.join(', ')}`)
+              .join(' | ')}`,
           classification: FINDING_CLASSIFICATIONS.AI_INTERPRETATION,
           severity: allSame ? FINDING_SEVERITIES.INFO : FINDING_SEVERITIES.WARNING,
           evidences: docsWithField.flatMap(({ document, extractions }) =>
@@ -262,9 +237,7 @@ export class MockAIService {
     return findings;
   }
 
-  /**
-   * Detect specific discrepancies between documents
-   */
+
   private static detectDiscrepancies(
     documentExtractions: Array<{
       document: DocumentInput;
@@ -334,9 +307,7 @@ export class MockAIService {
     return findings;
   }
 
-  /**
-   * Detect information that might be expected but is missing
-   */
+
   private static detectMissingInformation(
     documentExtractions: Array<{
       document: DocumentInput;
@@ -381,9 +352,7 @@ export class MockAIService {
     return findings;
   }
 
-  /**
-   * Additional analysis based on prompt keywords
-   */
+
   private static analyzeByPrompt(
     documentExtractions: Array<{
       document: DocumentInput;
@@ -409,15 +378,13 @@ export class MockAIService {
           findings.push({
             type: FINDING_TYPES.SUMMARY,
             title: `Financial overview of "${document.documentName}"`,
-            description: `Found ${monetaryValues.length} monetary values and ${revenueValues.length} revenue/financial figures. ${
-              monetaryValues.length > 0
+            description: `Found ${monetaryValues.length} monetary values and ${revenueValues.length} revenue/financial figures. ${monetaryValues.length > 0
                 ? `Monetary: ${monetaryValues.map((v) => v.value).join(', ')}.`
                 : ''
-            } ${
-              revenueValues.length > 0
+              } ${revenueValues.length > 0
                 ? `Financial metrics: ${revenueValues.map((v) => v.value).join(', ')}.`
                 : ''
-            }`,
+              }`,
             classification: FINDING_CLASSIFICATIONS.AI_INTERPRETATION,
             severity: FINDING_SEVERITIES.INFO,
             evidences: [...monetaryValues, ...revenueValues].map((v): EvidenceItem => ({
@@ -463,9 +430,7 @@ export class MockAIService {
     return findings;
   }
 
-  /**
-   * Build structured comparison table across documents
-   */
+
   private static buildComparisonTable(
     documentExtractions: Array<{
       document: DocumentInput;
@@ -512,9 +477,7 @@ export class MockAIService {
     return rows;
   }
 
-  /**
-   * Generate a consolidated narrative summary
-   */
+
   private static generateSummary(
     documents: DocumentInput[],
     findings: AIFinding[],
@@ -565,9 +528,7 @@ export class MockAIService {
     return summary;
   }
 
-  /**
-   * Format field names for display
-   */
+
   private static formatFieldName(field: string): string {
     return field
       .split('_')

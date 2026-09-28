@@ -1,9 +1,4 @@
-/**
- * Document Processing Pipeline
- * 
- * Modular parser system that extracts text content from different document formats.
- * Each parser returns structured content preserving document boundaries and metadata.
- */
+
 
 export interface ParsedContent {
   text: string;

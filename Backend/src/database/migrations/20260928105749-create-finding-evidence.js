@@ -19,7 +19,7 @@ module.exports = {
       },
       chunk_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: true
       },
       quote: {
         type: Sequelize.TEXT

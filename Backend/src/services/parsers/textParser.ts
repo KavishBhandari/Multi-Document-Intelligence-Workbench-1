@@ -10,7 +10,6 @@ export class TextParser implements DocumentParser {
     try {
       const content = fs.readFileSync(filePath, 'utf-8');
 
-      // Estimate page count based on ~3000 characters per page
       const pageCount = Math.max(1, Math.ceil(content.length / 3000));
 
       return {

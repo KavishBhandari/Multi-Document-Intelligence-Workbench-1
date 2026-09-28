@@ -3,10 +3,7 @@ import { PdfParser } from './pdfParser';
 import { TextParser } from './textParser';
 import { CsvParser } from './csvParser';
 
-/**
- * Parser Registry - factory pattern for selecting the correct parser
- * based on MIME type. Easily extensible by adding new parsers.
- */
+
 class ParserRegistry {
   private parsers: DocumentParser[];
 
