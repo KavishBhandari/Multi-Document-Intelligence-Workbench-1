@@ -492,7 +492,7 @@ export class MockAIService {
     let summary = `## Analysis Summary\n\n`;
     summary += `**Documents analyzed:** ${documents.length} (${docNames})\n`;
     summary += `**Analysis prompt:** "${prompt}"\n`;
-    summary += `**Total findings:** ${findings.length}\n\n`;
+    //summary += `**Total findings:** ${findings.length}\n\n`;
 
     if (keyValues.length > 0) {
       summary += `### Extracted Information\n`;

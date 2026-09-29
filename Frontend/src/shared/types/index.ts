@@ -48,9 +48,18 @@ export interface ComparisonRow {
 export interface MissingItem {
   id: string;
   field: string;
+  description: string;
   documentId: string;
   documentName: string;
   reason: string;
+  severity: string;
+  classification: string;
+  evidences: {
+    quote: string;
+    documentId: string;
+    documentName: string;
+    pageNumber: number | null;
+  }[];
 }
 
 /** A discrepancy item */
@@ -202,10 +211,19 @@ export interface EvaluateApiResponse {
     }>;
     missingInformation?: Array<{
       id?: number | string;
+      result_id?: number;
+      type?: string;
+      title?: string;
+      description?: string;
+      classification?: string;
+      severity?: string;
       field?: string;
       documentId?: string;
       documentName?: string;
       reason?: string;
+      createdAt?: string;
+      updatedAt?: string;
+      evidences?: EvaluateEvidence[];
     }>;
     allFindingsCount?: number;
     markdownOutput?: string;

@@ -80,13 +80,36 @@ export function normalizeEvaluateResponse(
   });
 
   const missingItems: MissingItem[] = (raw.missingInformation ?? []).map(
-    (m, idx) => ({
-      id: String(m.id ?? `missing-${idx + 1}`),
-      field: m.field ?? "Missing Field",
-      documentId: String(m.documentId ?? ""),
-      documentName: m.documentName ?? "Unknown Document",
-      reason: m.reason ?? "Information not found",
-    }),
+    (m, idx) => {
+      // Extract document info from evidences if available
+      const evidences = (m.evidences ?? []).map((ev) => ({
+        quote: ev.quote ?? "",
+        documentId: String(ev.document_id ?? ev.document?.id ?? ""),
+        documentName:
+          ev.document?.original_name ??
+          documentNames[String(ev.document_id)] ??
+          `Document ${ev.document_id}`,
+        pageNumber: ev.page_number ?? null,
+      }));
+
+      // Use the first evidence's document info as the primary document
+      const firstEvidence = evidences[0];
+
+      return {
+        id: String(m.id ?? `missing-${idx + 1}`),
+        field: m.title ?? m.field ?? "Missing Field",
+        description: m.description ?? "",
+        documentId: m.documentId
+          ? String(m.documentId)
+          : firstEvidence?.documentId ?? "",
+        documentName:
+          m.documentName ?? firstEvidence?.documentName ?? "Unknown Document",
+        reason: m.reason ?? m.description ?? "Information not found",
+        severity: m.severity ?? "info",
+        classification: m.classification ?? "ai_interpretation",
+        evidences,
+      };
+    },
   );
 
   return {
@@ -101,7 +124,7 @@ export function normalizeEvaluateResponse(
     createdAt: new Date().toISOString(),
     model: raw.model,
     processingTimeMs: raw.processingTimeMs,
-    allFindingsCount: raw.allFindingsCount,
+    //allFindingsCount: raw.allFindingsCount,
     markdownOutput: raw.markdownOutput,
   };
 }
@@ -171,7 +194,7 @@ export function isMissingItem(item: unknown): item is MissingItem {
   return (
     typeof obj.id === "string" &&
     typeof obj.field === "string" &&
-    typeof obj.documentId === "string" &&
-    typeof obj.reason === "string"
+    typeof obj.reason === "string" &&
+    Array.isArray(obj.evidences)
   );
 }

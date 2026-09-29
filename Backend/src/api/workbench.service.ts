@@ -272,7 +272,11 @@ export class WorkbenchService {
 
       const findings: any[] = latestResult.findings || [];
       const comparisonTable = analysisOutput.comparisonTable;
-      const summary = analysisOutput.summary;
+      // Strip "**Total findings:**" line from summary (may exist in old stored results)
+      const summary = analysisOutput.summary
+        .split('\n')
+        .filter((line: string) => !line.includes('**Total findings:**'))
+        .join('\n');
 
      
       const discrepancies = findings.filter((f) => f.type === 'discrepancy');
@@ -301,7 +305,7 @@ export class WorkbenchService {
         keyValues,
         comparisons,
         missingInformation: missingInfo,
-        allFindingsCount: findings.length,
+        //allFindingsCount: findings.length,
         markdownOutput,
       };
     } catch (err: any) {
